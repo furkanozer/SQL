@@ -1,0 +1,70 @@
+/* Vaka sayısının en çok olduğu kıta en çok vaka sayısı olandan en aza sırala*/
+SELECT continent , total_cases , population 
+FROM owid2 
+where continent != 'Null' and date = '2022-12-30'
+GROUP BY continent
+ORDER BY total_cases DESC
+
+/* Ölen sayısının en çok olduğu kıta en çok ölüm olandan en aza sırala*/
+SELECT continent , total_deaths , population 
+FROM owid2 
+where continent != 'Null' and date = '2022-12-30'
+GROUP BY continent
+ORDER BY total_deaths DESC
+
+
+/* ülkelerin covidden toplam ölüm sayısının toplam populasyonuna oranı */
+SELECT continent ,location,total_deaths , population, (total_deaths/population) as death_ratio
+FROM owid2 
+where continent != 'Null' AND Date = '2023-10-04'
+GROUP BY location
+ORDER BY death_ratio DESC
+
+/* toplam aşılanan insan sayısının ülkenin toplam populasyonuna oranı */
+SELECT location, people_vaccinated , population , (people_vaccinated/population)*100 as vaccinations_by_population
+FROM owid2
+WHERE people_vaccinated !='Null' and population > 1000000 
+GROUP BY location
+ORDER BY vaccinations_by_population desc
+
+
+/* `Türkiye` de en çok vakanın görüldüğü gün nedir ve toplam vakaya oranı nedir */ 
+SELECT location , date , new_cases , total_cases , new_cases/total_cases as oran
+FROM owid2
+WHERE location = 'Turkey' and new_cases !='0'
+ORDER BY new_cases DESC
+
+/* `Türkiye` de en çok ölümün görüldüğü gün nedir ve toplam ölüme oranı nedir  ve toplam populationun ne kadarı ölmüştür */
+SELECT location , date, new_deaths , total_deaths , population , new_deaths/total_deaths as oran , total_deaths/population as oran2
+FROM owid2 
+WHERE location = 'Turkey' and new_deaths !='null'
+ORDER BY new_deaths DESC
+
+/* Kıtaların pozitif test verme oranı*/
+SELECT continent , positive_rate  
+FROM owid2
+WHERE positive_rate !='null'
+GROUP BY continent
+ORDER BY positive_rate desc
+
+/* Yaş ortalaması 40 den küçük olan ülkelerde en fazla vaka sayısı olan 20 ülke*/
+SELECT location, median_age , total_cases  
+FROM owid2
+where median_age < 40 and location !='World' and total_cases!='null' and date = '2022-12-30'
+GROUP BY location
+ORDER BY total_cases desc
+LIMIT 20
+
+/* Avrupa kıtasında en çok vaka görülen ülkeler*/
+SELECT continent , location , total_cases
+FROM owid2
+WHERE continent = 'Europe' and date = '2022-12-30'
+GROUP BY location
+ORDER BY total_cases desc
+
+/* geliri en yüksek olan ülkelerdeki ölüm sayısı ve populasyona oranı*/
+SELECT location , gdp_per_capita , total_deaths , total_deaths/population 
+FROM owid2
+WHERE date = '2022-12-30' and gdp_per_capita !='null' and total_deaths!='null'
+GROUP BY location
+ORDER BY gdp_per_capita desc
